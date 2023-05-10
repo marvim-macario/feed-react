@@ -5,8 +5,6 @@ import { useState } from "react"
 import { Comment } from './Comment'
 import styles from './Post.module.css';
 
-
-
 export function Post({ author, publishedAt, content }) {
   const [comments, setComments] = useState([])
 
@@ -23,18 +21,32 @@ export function Post({ author, publishedAt, content }) {
       locale: ptBR,
       addSuffix: true
     }
-  )
-  function handleNewCommentText (){
-    setNewCommentText(event.target.value)
+    )
+
+    function handleCreateNewComment() {
+      event.preventDefault()
+      setComments([...comments, newCommentText]);
+      setNewCommentText('')
+    }
+
+    function handleNewCommentText() {
+      event.target.setCustomValidity('')
+      setNewCommentText(event.target.value)
+    }
+
+    function handleNewCommentInvalid (){
+      event.target.setCustomValidity('Esse campo é obrigatório!')
+    }
+
+    function deleteComment(comment){
+      const comentariosNaoDeletados = comments.filter(commentToDelelete => {
+        return comment !== commentToDelelete
+      })
+      setComments(comentariosNaoDeletados)
+    }
+
+    const isNewCommentEmpty = newCommentText.length === 0
     
-  }
-
-  function handleCreateNewComment() {
-    event.preventDefault()
-    setComments([...comments, newCommentText]);
-    setNewCommentText('')
-  }
-
   return (
     <article className={styles.post}>
       <header>
@@ -54,9 +66,10 @@ export function Post({ author, publishedAt, content }) {
         {content.map(line => {
 
           if (line.type === 'paragraph') {
-            return <p>{line.content}</p>;
+            return <p key={line.content}>{line.content}</p>
+
           } else if (line.type === 'link') {
-            return <a href="">{line.content}</a>;
+            return <a key={line.content} href="">{line.content}</a>;
           }
 
         })}
@@ -69,18 +82,27 @@ export function Post({ author, publishedAt, content }) {
           placeholder="Deixe seu comentário"
           onChange={handleNewCommentText}
           value={newCommentText}
+          onInvalid={handleNewCommentInvalid}
+          required
         />
 
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentEmpty}>
+            Publicar
+          </button>
         </footer>
       </form>
 
       <div className={styles.commentList}>
         {comments.map(comment => {
-          return <Comment content={comment} />
+          return (
+            <Comment 
+              key={comment} 
+              content={comment} 
+              onDeleteComment={deleteComment} 
+            />
+          )
         })}
-
       </div>
     </article>
   )

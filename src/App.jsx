@@ -28,9 +28,9 @@ const posts = [
       role: 'Web Developer'
     },
     content: [
-      {id:1, type: 'paragraph', content: 'Fala galeraa 👋' },
-      {id:2, type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
-      {id:3, type: 'link', content: '👉 jane.design/doctorcare' }
+      { type: 'paragraph', content: 'Fala galeraa 👋' },
+      { type: 'paragraph', content: 'Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀' },
+      { type: 'link', content: '👉 jane.design/doctorcare' }
     ],
     publishedAt: new Date('2023-05-09 21:00:00')
   }
@@ -47,6 +47,7 @@ function App() {
           {posts.map(post => {
             return (
               <Post
+                key = {post.id}
                 author={post.author}
                 content={post.content}
                 publishedAt={post.publishedAt}
